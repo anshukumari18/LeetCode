@@ -1,30 +1,32 @@
 class Solution {
     public String convert(String s, int numRows) {
-        if (numRows == 1 || numRows >= s.length()) {
+       if (numRows == 1 || numRows >= s.length()) {
             return s;
         }
 
-        StringBuilder[] rows = new StringBuilder[numRows];
+        int idx = 0, d = 1;
+        List<Character>[] rows = new ArrayList[numRows];
         for (int i = 0; i < numRows; i++) {
-            rows[i] = new StringBuilder();
+            rows[i] = new ArrayList<>();
         }
 
-        int currentRow = 0;
-        boolean goingDown = false;
-
         for (char c : s.toCharArray()) {
-            rows[currentRow].append(c);
-            if (currentRow == 0 || currentRow == numRows - 1) {
-                goingDown = !goingDown; // bounce off top or bottom
+            rows[idx].add(c);
+            if (idx == 0) {
+                d = 1;
+            } else if (idx == numRows - 1) {
+                d = -1;
             }
-            currentRow += goingDown ? 1 : -1;
+            idx += d;
         }
 
         StringBuilder result = new StringBuilder();
-        for (StringBuilder row : rows) {
-            result.append(row);
+        for (List<Character> row : rows) {
+            for (char c : row) {
+                result.append(c);
+            }
         }
 
-        return result.toString();
+        return result.toString();        
     }
 }
