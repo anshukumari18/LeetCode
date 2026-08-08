@@ -1,20 +1,22 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 class Solution {
     public int lengthOfLongestSubstring(String s) {
         int n = s.length();
         int res = 0;
-        for (int i = 0; i < n; i++) {
-            Set<Character> charSet = new HashSet<>();
-            for (int j = i; j < n; j++) {
-                if (charSet.contains(s.charAt(j))) {
-                    break;
-                } else {
-                    charSet.add(s.charAt(j));
-                    res = Math.max(res, j - i + 1);
-                }
+        // Map stores the character and its last seen index
+        Map<Character, Integer> charIndexMap = new HashMap<>();
+        int start = 0;
+        
+        for (int end = 0; end < n; end++) {
+            char currentChar = s.charAt(end);
+            if (charIndexMap.containsKey(currentChar)) {
+                // Jump the start of the window
+                start = Math.max(start, charIndexMap.get(currentChar) + 1);
             }
+            res = Math.max(res, end - start + 1);
+            charIndexMap.put(currentChar, end);
         }
         return res;
     }
