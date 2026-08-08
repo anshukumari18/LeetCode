@@ -1,26 +1,22 @@
 class Solution {
     public boolean isMatch(String s, String p) {
         int m = s.length(), n = p.length();
-        // dp[i][j] = true if s[i..m) matches p[j..n)
         boolean[][] dp = new boolean[m + 1][n + 1];
-        dp[m][n] = true; // empty string matches empty pattern
-
-        // Fill from bottom-right to top-left
-        for (int i = m; i >= 0; i--) {
-            for (int j = n - 1; j >= 0; j--) {
-                boolean firstMatch = (i < m) &&
-                        (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.');
-
-                if (j + 1 < n && p.charAt(j + 1) == '*') {
-                    // Option 1: skip "x*" entirely (zero occurrences)
-                    // Option 2: use one occurrence of x and stay on same pattern position
-                    dp[i][j] = dp[i][j + 2] || (firstMatch && dp[i + 1][j]);
+        dp[0][0] = true;
+        for (int j = 2; j <= n; j++) {
+            if (p.charAt(j - 1) == '*') {
+                dp[0][j] = dp[0][j - 2];
+            }
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i][j - 2] || (dp[i - 1][j] && (s.charAt(i - 1) == p.charAt(j - 2) || p.charAt(j - 2) == '.'));
                 } else {
-                    dp[i][j] = firstMatch && dp[i + 1][j + 1];
+                    dp[i][j] = dp[i - 1][j - 1] && (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.');
                 }
             }
         }
-
-        return dp[0][0];
+        return dp[m][n];
     }
 }
