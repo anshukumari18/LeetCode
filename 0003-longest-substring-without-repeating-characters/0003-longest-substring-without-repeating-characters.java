@@ -1,25 +1,21 @@
 class Solution {
     public int lengthOfLongestSubstring(String s) {
-        int n = s.length();
-        if (n == 0) return 0;
+        int left = 0, right = 0;
+        int maxLength = 0;
 
-        char[] arr = s.toCharArray();   // avoid repeated charAt() overhead
-        int[] prevIndex = new int[128]; // ASCII lookup table
-        
-        int left = 0, maxLength = 0;
+        // Array to store the last seen index + 1 of each character
+        int[] prevIndex = new int[128];
 
-        for (int right = 0; right < n; right++) {
-            char ch = arr[right];
+        for (right = 0; right < s.length(); right++) {
+            char ch = s.charAt(right);
             
-            if (prevIndex[ch] > left) {
-                left = prevIndex[ch];
-            }
+            // Move left pointer to the right of the last seen duplicate
+            left = Math.max(left, prevIndex[ch]);
             
-            int currentLength = right - left + 1;
-            if (currentLength > maxLength) {
-                maxLength = currentLength;
-            }
-            
+            // Calculate and update the maximum length found so far
+            maxLength = Math.max(maxLength, right - left + 1);
+
+            // Record the next index position for this character
             prevIndex[ch] = right + 1;
         }
 
