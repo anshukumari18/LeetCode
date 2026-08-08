@@ -1,21 +1,21 @@
 class Solution {
+
     public String convert(String s, int numRows) {
-        if (numRows == 1 || numRows >= s.length()) return s;
+        if(numRows==1 || numRows>=s.length()) {
+            return s;
+        }
 
-        int n = s.length();
-        int cycle = 2 * (numRows - 1);
-        char[] result = new char[n];
-        int idx = 0;
-
-        for (int row = 0; row < numRows; row++) {
-            for (int j = row; j < n; j += cycle) {
-                result[idx++] = s.charAt(j);
-                int diag = j + cycle - 2 * row;
-                if (row != 0 && row != numRows - 1 && diag < n) {
-                    result[idx++] = s.charAt(diag);
+        StringBuilder str = new StringBuilder();
+        for(int i=0; i<numRows; i++) {
+            int one= (numRows*2)-2;
+            int two= i*2;
+            for(int j=i; j<s.length(); j+=one) {
+                str.append(s.charAt(j));
+                if(two>0 && two<one && (j+one)-two<s.length()) {
+                    str.append(s.charAt((j+one)-two));
                 }
             }
         }
-        return new String(result);
+        return str.toString();
     }
 }
