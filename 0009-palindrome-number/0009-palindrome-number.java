@@ -1,21 +1,19 @@
 class Solution {
     public boolean isPalindrome(int x) {
-        
-        // Negative numbers and numbers ending with 0 (except 0 itself)
+        // Negative numbers are not palindromes
+        // Numbers ending in 0 (except 0 itself) can't be palindromes
         if (x < 0 || (x % 10 == 0 && x != 0)) {
             return false;
         }
 
-        int reversedHalf = 0;
-
-        // Reverse only half of the number
-        while (x > reversedHalf) {
-            reversedHalf = reversedHalf * 10 + x % 10;
+        int reverted = 0;
+        while (x > reverted) {
+            reverted = reverted * 10 + x % 10;
             x /= 10;
         }
 
-        // If length is even: x == reversedHalf
-        // If length is odd: x == reversedHalf / 10
-        return (x == reversedHalf) || (x == reversedHalf / 10);
+        // When the length is odd, we can get rid of the middle digit by reverted/10
+        // e.g. 12321 -> x=12, reverted=123 -> 123/10 == 12
+        return x == reverted || x == reverted / 10;
     }
 }
