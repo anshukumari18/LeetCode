@@ -1,27 +1,23 @@
 class Solution {
     public int lengthOfLongestSubstring(String s) {
-        int left = 0, right = 0;
-        int size = 0, max = 0;
-        HashSet<Character> set = new HashSet<>();
+        int l = s.length();
+        int start = 1; // Start of the valid substring
+        int ret = 0;   // Stores max length found
+        int cur = 0;   // Current length of valid substring
+        int[] position = new int[128]; // Tracks last seen index of each character
 
-        while (right < s.length()) {
-            if (set.contains(s.charAt(right))) {
-                while(s.charAt(left) != s.charAt(right)){
-                    set.remove(s.charAt(left));
-                    left++;
-                    size--;
-                }
-                left ++;
+        for (int i = 0; i < l; i++) {
+            char c = s.charAt(i);
+            // If character is found again within the valid window, update start
+            if (position[c] >= start) {
+                start = position[c] + 1;
+                cur = i + 2 - start; // Adjust current length
+            } else {
+                cur += 1;
+                ret = Math.max(ret, cur); // Update max length
             }
-            else{
-                size++;
-                set.add(s.charAt(right));
-            }
-            
-            right++;
-            max = max < size ? size : max;
+            position[c] = i + 1; // Update character's last seen position
         }
-        return max;
-        // Consider giving an upvote... Please :)
+        return ret;
     }
 }
