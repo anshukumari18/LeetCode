@@ -1,19 +1,27 @@
 class Solution {
     public int lengthOfLongestSubstring(String s) {
-        boolean isHere[] = new boolean[128]; // Tracks if a character is in the substring
-        int maxLen = 0, l = 0, r = 0;
+        int left = 0, right = 0;
+        int size = 0, max = 0;
+        HashSet<Character> set = new HashSet<>();
 
-        while (r < s.length()) {
-            if (!isHere[s.charAt(r)]) { // If the character is not in the substring
-                isHere[s.charAt(r)] = true;
-                r++;
-                maxLen = Math.max(maxLen, r - l); // Update max length
-            } else { // If it's a duplicate, remove characters from the left
-                isHere[s.charAt(l)] = false;
-                l++;
+        while (right < s.length()) {
+            if (set.contains(s.charAt(right))) {
+                while(s.charAt(left) != s.charAt(right)){
+                    set.remove(s.charAt(left));
+                    left++;
+                    size--;
+                }
+                left ++;
             }
+            else{
+                size++;
+                set.add(s.charAt(right));
+            }
+            
+            right++;
+            max = max < size ? size : max;
         }
-
-        return maxLen;
+        return max;
+        // Consider giving an upvote... Please :)
     }
 }
