@@ -1,24 +1,24 @@
+import java.util.HashMap;
+import java.util.Map;
+
 class Solution {
     public int lengthOfLongestSubstring(String s) {
-        int left = 0, right = 0;
-        int maxLength = 0;
-
-        // Array to store the last seen index + 1 of each character
-        int[] prevIndex = new int[128];
-
-        for (right = 0; right < s.length(); right++) {
-            char ch = s.charAt(right);
+        Map<Character, Integer> lastSeen = new HashMap<>();
+        int left = 0;
+        int maxLen = 0;
+        
+        for (int right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
             
-            // Move left pointer to the right of the last seen duplicate
-            left = Math.max(left, prevIndex[ch]);
+            if (lastSeen.containsKey(c) && lastSeen.get(c) >= left) {
+                // Duplicate found inside current window; shrink window
+                left = lastSeen.get(c) + 1;
+            }
             
-            // Calculate and update the maximum length found so far
-            maxLength = Math.max(maxLength, right - left + 1);
-
-            // Record the next index position for this character
-            prevIndex[ch] = right + 1;
+            lastSeen.put(c, right);
+            maxLen = Math.max(maxLen, right - left + 1);
         }
-
-        return maxLength;
+        
+        return maxLen;
     }
 }
