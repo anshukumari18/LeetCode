@@ -2,29 +2,46 @@ import java.util.*;
 
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
-        List<List<Integer>> res = new ArrayList<>();
-        Arrays.sort(nums);
+        Map<Integer, Integer> freq = new HashMap<>();
+        Set<List<Integer>> res = new HashSet<>();
 
-        for (int i = 0; i < nums.length - 2; i++) {
-            if (i > 0 && nums[i] == nums[i - 1]) continue;
+        for (int x : nums) freq.put(x, freq.getOrDefault(x, 0) + 1);
 
-            int left = i + 1, right = nums.length - 1;
-            while (left < right) {
-                int total = nums[i] + nums[left] + nums[right];
-                if (total == 0) {
-                    res.add(Arrays.asList(nums[i], nums[left], nums[right]));
-                    while (left < right && nums[left] == nums[left + 1]) left++;
-                    while (left < right && nums[right] == nums[right - 1]) right--;
-                    left++;
-                    right--;
-                } else if (total < 0) {
-                    left++;
-                } else {
-                    right--;
+        if (freq.getOrDefault(0, 0) >= 3)
+            res.add(Arrays.asList(0, 0, 0));
+
+        List<Integer> neg = new ArrayList<>();
+        List<Integer> pos = new ArrayList<>();
+
+        for (int x : freq.keySet()) {
+            if (x < 0) neg.add(x);
+            else if (x > 0) pos.add(x);
+        }
+
+        for (int i : neg) {
+            for (int j : pos) {
+                int k = -i - j;
+                if (freq.containsKey(k)) {
+                    if ((k == i || k == j) && freq.get(k) < 2) continue;
+                    if (k == i && k == j && freq.get(k) < 3) continue;
+                    List<Integer> triplet = Arrays.asList(i, j, k);
+                    Collections.sort(triplet);
+                    res.add(triplet);
                 }
             }
         }
 
-        return res;
+        for (int x : freq.keySet()) {
+            if (freq.get(x) >= 2) {
+                int y = -2 * x;
+                if (y != x && freq.containsKey(y)) {
+                    List<Integer> triplet = Arrays.asList(x, x, y);
+                    Collections.sort(triplet);
+                    res.add(triplet);
+                }
+            }
+        }
+
+        return new ArrayList<>(res);
     }
 }
