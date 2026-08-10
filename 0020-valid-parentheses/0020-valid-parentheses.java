@@ -1,26 +1,23 @@
-import java.util.Stack;
-import java.util.Map;
-import java.util.HashMap;
-
 class Solution {
     public boolean isValid(String s) {
+        char[] chars = s.toCharArray();
         Stack<Character> stack = new Stack<>();
-        Map<Character, Character> pairs = new HashMap<>();
-        pairs.put(')', '(');
-        pairs.put('}', '{');
-        pairs.put(']', '[');
-
-        for (char c : s.toCharArray()) {
-            if (pairs.containsKey(c)) { // Closing bracket
-                if (stack.isEmpty() || stack.peek() != pairs.get(c)) {
-                    return false;
-                }
-                stack.pop();
-            } else { // Opening bracket
-                stack.push(c);
+        for (char element : chars) {
+            if (element == '(' || element == '[' || element == '{') {
+                stack.push(element);
+                continue;
+            } else if (stack.empty()) {
+                return false;
+            }
+            char top = stack.pop();
+            if (top == '(' && element != ')') {
+                return false;
+            } else if (top == '[' && element != ']') {
+                return false;
+            } else if (top == '{' && element != '}') {
+                return false;
             }
         }
-
-        return stack.isEmpty();
+        return stack.empty();
     }
 }
