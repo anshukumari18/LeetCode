@@ -1,34 +1,25 @@
 class Solution {
     public int divide(int dividend, int divisor) {
-        if (dividend == divisor)
-            return 1;
+        if (dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE;
+        if (dividend == Integer.MIN_VALUE && divisor == 1) return Integer.MIN_VALUE;
 
-        
-        boolean isPositive = (dividend < 0) == (divisor < 0);
+        boolean negative = (dividend < 0) ^ (divisor < 0);
 
-        
-        long a = Math.abs((long) dividend);
-        long b = Math.abs((long) divisor);
-        long ans = 0;
+        long absDividend = Math.abs((long) dividend);
+        long absDivisor = Math.abs((long) divisor);
 
-        
-        while (a >= b) {
-            int q = 0;
-            
-            
-            while (a > (b << (q + 1)))
-                q++;
-            
-            
-            ans += (1L << q);
-            a -= (b << q);
+        int quotient = 0;
+
+        while (absDividend >= absDivisor) {
+            long tempDivisor = absDivisor, multiple = 1;
+            while (absDividend >= (tempDivisor << 1)) {
+                tempDivisor <<= 1;
+                multiple <<= 1;
+            }
+            absDividend -= tempDivisor;
+            quotient += multiple;
         }
 
-        
-        if (ans == (1L << 31) && isPositive)
-            return Integer.MAX_VALUE;
-
-        
-        return isPositive ? (int) ans : (int) -ans;
+        return negative ? -quotient : quotient;
     }
 }
