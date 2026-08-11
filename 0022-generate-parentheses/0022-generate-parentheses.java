@@ -1,30 +1,29 @@
-import java.util.*;
-
 class Solution {
+    public static List<String>ans=new ArrayList<>();
+    public static void  generating( char []a,int idx,int n,int oc,int cc){
+        if(idx==n){
+                ans.add(new String(a));
+             return;
 
-    public List<String> generateParenthesis(int n) {
-        List<String> result = new ArrayList<>();
-        backtrack(result, "", 0, 0, n);
-        return result;
+        }
+
+        if(oc<n/2){
+            a[idx]='(';
+            generating(a,idx+1,n,oc+1,cc);
+
+        }
+
+        if(oc>cc){
+            a[idx]=')';
+            generating(a,idx+1,n,oc,cc+1);
+        }
+       
     }
-
-    private void backtrack(List<String> result, String current,
-                           int open, int close, int n) {
-
-        // If the string is complete
-        if (current.length() == n * 2) {
-            result.add(current);
-            return;
-        }
-
-        // Add '(' if open brackets are still available
-        if (open < n) {
-            backtrack(result, current + "(", open + 1, close, n);
-        }
-
-        // Add ')' only if it keeps the string valid
-        if (close < open) {
-            backtrack(result, current + ")", open, close + 1, n);
-        }
+    public List<String> generateParenthesis(int n) {
+        char a[]=new char[2*n];
+        ans.clear();
+        generating(a,0,2*n,0,0);
+         return ans;
+        
     }
 }
