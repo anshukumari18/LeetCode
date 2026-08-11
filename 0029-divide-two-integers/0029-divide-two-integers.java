@@ -1,39 +1,34 @@
 class Solution {
     public int divide(int dividend, int divisor) {
-        // Edge case: overflow
-        if (dividend == Integer.MIN_VALUE && divisor == -1) {
-            return Integer.MAX_VALUE;
-        }
+        if (dividend == divisor)
+            return 1;
 
-        // Determine sign of result
-        boolean negative = (dividend < 0) ^ (divisor < 0);
+        
+        boolean isPositive = (dividend < 0) == (divisor < 0);
 
-        // Work with positive long values to avoid overflow
+        
         long a = Math.abs((long) dividend);
         long b = Math.abs((long) divisor);
+        long ans = 0;
 
-        long result = 0;
-
+        
         while (a >= b) {
-            long temp = b;
-            long multiple = 1;
-
-            // Double divisor until it exceeds dividend
-            while (a >= (temp << 1)) {
-                temp <<= 1;
-                multiple <<= 1;
-            }
-
-            a -= temp;
-            result += multiple;
+            int q = 0;
+            
+            
+            while (a > (b << (q + 1)))
+                q++;
+            
+            
+            ans += (1L << q);
+            a -= (b << q);
         }
 
-        if (negative) result = -result;
+        
+        if (ans == (1L << 31) && isPositive)
+            return Integer.MAX_VALUE;
 
-        // Clamp to 32-bit range
-        if (result > Integer.MAX_VALUE) return Integer.MAX_VALUE;
-        if (result < Integer.MIN_VALUE) return Integer.MIN_VALUE;
-
-        return (int) result;
+        
+        return isPositive ? (int) ans : (int) -ans;
     }
 }
