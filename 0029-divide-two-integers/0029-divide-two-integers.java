@@ -1,18 +1,30 @@
 class Solution {
-     public int divide(int dividend, int divisor) {
-        if (dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE; //Cornor case when -2^31 is divided by -1 will give 2^31 which doesnt exist so overflow 
-         
-        boolean negative = dividend < 0 ^ divisor < 0; //Logical XOR will help in deciding if the results is negative only if any one of them is negative
-        
-        dividend = Math.abs(dividend);
-        divisor = Math.abs(divisor);
-        int quotient = 0, subQuot = 0;
-        
-        while (dividend - divisor >= 0) {
-            for (subQuot = 0; dividend - (divisor << subQuot << 1) >= 0; subQuot++);
-            quotient += 1 << subQuot; //Add to the quotient
-            dividend -= divisor << subQuot; //Substract from dividend to start over with the remaining
+    public int divide(int dividend, int divisor) {
+        // Handle overflow case
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+            return Integer.MAX_VALUE;
         }
-        return negative ? -quotient : quotient;
+
+        // Convert to long to avoid overflow and take absolute values
+        long a = Math.abs((long) dividend);
+        long b = Math.abs((long) divisor);
+        int result = 0;
+
+        while (a >= b) {
+            long temp = b;
+            int multiple = 1;
+
+            // Double the divisor until it's larger than dividend
+            while (a >= (temp << 1)) {
+                temp <<= 1;
+                multiple <<= 1;
+            }
+
+            a -= temp;
+            result += multiple;
+        }
+
+        // Apply sign
+        return (dividend > 0) == (divisor > 0) ? result : -result;
     }
 }
