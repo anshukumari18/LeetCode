@@ -1,24 +1,24 @@
 class Solution {
     public int divide(int dividend, int divisor) {
-        if (divisor == 0) {
-            return 0;
-        }
-        if (dividend == Integer.MIN_VALUE && divisor == -1) {
-            return Integer.MAX_VALUE;
-        }
-        int quotient = 0;
-        boolean negative = (dividend < 0) != (divisor < 0);
-        long longDividend = Math.abs((long) dividend);
-        long longDivisor = Math.abs((long) divisor);
-        while (longDividend >= longDivisor) {
+        long quotient = 0;
+        int sign = 1;
+        int max = Integer.MAX_VALUE,  min = Integer.MIN_VALUE;
+        if(dividend < 0 && divisor > 0 || dividend > 0 && divisor < 0)sign = -1;
+        long dd = (long)dividend , dv = (long)divisor;
+        dd = Math.abs(dd);dv = Math.abs(dv);
+        while(dd >= dv){
             int shift = 0;
-            while (longDividend >= (longDivisor << shift)) {
-                shift++;
-            }
-            shift--;
-            longDividend -= longDivisor << shift;
-            quotient += 1 << shift;
+            while(dd >= (dv<<shift))shift++;
+            quotient += (long)1l<<(shift-1);
+            // System.out.println(quotient+"-"+shift);
+            dd -= dv<<(shift-1);
         }
-        return negative ? -quotient : quotient;
+        if(sign == 1){
+            if(quotient > max)return max;
+            return (int)quotient;
+        }else{
+            if((~quotient)+1 < min)return min; // ~quotient+1 = -quotient
+            return (int)(~quotient)+1;
+        }
     }
 }
