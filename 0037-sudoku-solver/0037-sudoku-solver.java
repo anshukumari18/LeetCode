@@ -1,32 +1,36 @@
 class Solution {
-    public void solveSudoku(char[][] board) {
-        solve(board);
-    }
+    int[] rows = new int[9], cols = new int[9], boxes = new int[9];
+    List<int[]> empties = new ArrayList<>();
 
-    private boolean solve(char[][] board) {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (board[i][j] == '.') {
-                    for (char c = '1'; c <= '9'; c++) {
-                        if (isValid(board, i, j, c)) {
-                            board[i][j] = c;
-                            if (solve(board)) return true;
-                            board[i][j] = '.'; // backtrack
-                        }
-                    }
-                    return false;
-                }
+    public void solveSudoku(char[][] board) {
+        for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                if(board[i][j]=='.') empties.add(new int[]{i,j});
+                else place(i,j,board[i][j]-'1');
             }
         }
-        return true;
+        backtrack(board);
     }
 
-    private boolean isValid(char[][] board, int row, int col, char c) {
-        for (int i = 0; i < 9; i++) {
-            if (board[row][i] == c) return false;
-            if (board[i][col] == c) return false;
-            if (board[3 * (row / 3) + i / 3][3 * (col / 3) + i % 3] == c) return false;
+    void place(int r,int c,int num){int m=1<<num;rows[r]|=m;cols[c]|=m;boxes[(r/3)*3+c/3]|=m;}
+    void remove(int r,int c,int num){int m=~(1<<num);rows[r]&=m;cols[c]&=m;boxes[(r/3)*3+c/3]&=m;}
+    int countBits(int n){int c=0;while(n>0){n&=(n-1);c++;}return c;}
+    int bitPos(int mask){int p=0;while((1<<p)!=mask)p++;return p;}
+
+    boolean backtrack(char[][] board){
+        if(empties.isEmpty()) return true;
+        int minOpt=10,idx=-1,mask=0;
+        for(int k=0;k<empties.size();k++){
+            int[] cell=empties.get(k);int r=cell[0],c=cell[1];
+            int b=(r/3)*3+c/3, used=rows[r]|cols[c]|boxes[b];
+            int opt=9-countBits(used);
+            if(opt<minOpt){minOpt=opt;idx=k;mask=(~used)&0x1FF;if(opt==1)break;}
         }
-        return true;
+        int[] cell=empties.remove(idx);int r=cell[0],c=cell[1];
+        while(mask!=0){int pick=mask&-mask;int num=bitPos(pick);
+            place(r,c,num);board[r][c]=(char)(num+'1');
+            if(backtrack(board)) return true;
+            remove(r,c,num);board[r][c]='.';mask-=pick;}
+        empties.add(idx,cell);return false;
     }
 }
