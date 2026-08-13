@@ -1,31 +1,27 @@
 class Solution {
-    private void permuteUniqueUtil(int[] nums, List<List<Integer>> ans, List<Integer> ds, boolean[] used){
-        if(ds.size() == nums.length){
-            ans.add(new ArrayList<>(ds));
+    List<List<Integer>> result=new ArrayList<>();
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        helper(nums,0,new ArrayList<>());
+        return result;
+    }
+    public void helper(int []arr,int start,List<Integer> templist){
+        if(templist.size()==arr.length){
+            result.add(new ArrayList<>(templist));
             return;
-        }
-
-        for(int i=0; i<nums.length; i++){
-            if(used[i]) continue;
-
-            if(i>0 && nums[i-1] == nums[i] && !used[i-1]) continue; //Skip a duplicate number if its previous identical number is not used yet.
-
-            if(!used[i]){
-                used[i] = true;
-                ds.add(nums[i]);
-                permuteUniqueUtil(nums, ans, ds, used);
-                ds.remove(ds.size()-1);
-                used[i]= false;
+        }else if(templist.size()<arr.length){
+        for(int i=0;i<arr.length;i++){
+            if((i>0 && arr[i]!=arr[i-1])||i==0){
+                if(arr[i]!=-999){
+                    templist.add(arr[i]);
+                    int temp=arr[i];
+                    arr[i]=-999;
+                    helper(arr,i,templist);
+                    arr[i]=temp;
+                    templist.remove(templist.size()-1);
+                }
             }
         }
-    }
-    public List<List<Integer>> permuteUnique(int[] nums) {
-       List<List<Integer>> ans = new ArrayList<>();
-       List<Integer> ds = new ArrayList<>();
-       boolean[] used = new boolean[nums.length];
-       //Important 
-       Arrays.sort(nums);
-       permuteUniqueUtil(nums, ans, ds, used);
-       return ans;
+        }
     }
 }
