@@ -1,27 +1,29 @@
 class Solution {
-    List<List<Integer>> result=new ArrayList<>();
     public List<List<Integer>> permuteUnique(int[] nums) {
-        Arrays.sort(nums);
-        helper(nums,0,new ArrayList<>());
+        List<List<Integer>> result = new ArrayList<>();
+        boolean[] used = new boolean[nums.length];
+        Arrays.sort(nums); 
+        backtrack(nums, used, new ArrayList<>(), result);
         return result;
     }
-    public void helper(int []arr,int start,List<Integer> templist){
-        if(templist.size()==arr.length){
-            result.add(new ArrayList<>(templist));
+
+    private void backtrack(int[] nums, boolean[] used, List<Integer> path, List<List<Integer>> result) {
+        if (path.size() == nums.length) {
+            result.add(new ArrayList<>(path));
             return;
-        }else if(templist.size()<arr.length){
-        for(int i=0;i<arr.length;i++){
-            if((i>0 && arr[i]!=arr[i-1])||i==0){
-                if(arr[i]!=-999){
-                    templist.add(arr[i]);
-                    int temp=arr[i];
-                    arr[i]=-999;
-                    helper(arr,i,templist);
-                    arr[i]=temp;
-                    templist.remove(templist.size()-1);
-                }
-            }
         }
+
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i]) continue;
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) continue;
+
+            used[i] = true;
+            path.add(nums[i]);
+
+            backtrack(nums, used, path, result);
+
+            path.remove(path.size() - 1);
+            used[i] = false;
         }
     }
 }
