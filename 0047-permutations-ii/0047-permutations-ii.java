@@ -1,38 +1,28 @@
 class Solution {
-    List<List<Integer>> list=new ArrayList<List<Integer>>();
-    int fr_ar[][],newn=0;
-    
-    void go(List ll){
-        int flag=0;
-        for(int i=0;i<newn;i++){
-            if(fr_ar[i][1]>0){
-                fr_ar[i][1]--;
-                List<Integer> newlist=new ArrayList<Integer>(ll);
-                newlist.add(fr_ar[i][0]);
-                go(newlist);
-                fr_ar[i][1]++;
-                flag=1;
+    public List<List<Integer>> permuteUnique(int[] arr) {
+        List<List<Integer>> res=new ArrayList<>();
+        Arrays.sort(arr);
+        boolean used[]=new boolean[arr.length];
+        fun(new ArrayList<>(),used,res,arr);
+        return res;
+    }
+
+    public void fun(List<Integer> li,boolean used[],List<List<Integer>> res,int arr[]){
+        if(li.size()==arr.length){
+            res.add(new ArrayList<>(li));
+            return;
+        }
+
+        int lastused=Integer.MIN_VALUE;
+        for(int i=0;i<arr.length;i++){
+            if(used[i]==false && lastused!=arr[i]){
+                used[i]=true;
+                li.add(arr[i]);
+                lastused=arr[i];
+                fun(li,used,res,arr);
+                used[i]=false;
+                li.remove(li.size()-1);
             }
         }
-        if(flag==0) list.add(ll);
-    }
-    
-    public List<List<Integer>> permuteUnique(int[] nums) {
-        HashMap<Integer,Integer> map=new HashMap<Integer,Integer>();
-        int i,n=nums.length;
-        for(i=0;i<n;i++){
-            if(!map.containsKey(nums[i])){
-                map.put(nums[i],1);
-                newn++;
-            }else map.put(nums[i],map.get(nums[i])+1);
-        }
-        fr_ar=new int[newn][2];i=0;
-        for (Map.Entry<Integer,Integer> entry : map.entrySet()) {
-            fr_ar[i][0]=entry.getKey();
-            fr_ar[i][1]=entry.getValue();
-            i++;
-        }
-        go(new ArrayList<Integer>());        
-        return list;
     }
 }
