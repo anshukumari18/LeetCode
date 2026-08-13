@@ -1,27 +1,38 @@
 class Solution {
-    public static List<List<Integer>> permuteUnique(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
-        if (nums == null || nums.length == 0) return result;
-        int n = nums.length;
-        int[] visited = new int[n];
-        Arrays.sort(nums);
-        helper(nums, visited, new ArrayList<>(), result);
-        return result;
-    }
-
-    public static void helper(int[] nums, int[] visited, List<Integer> curlist, List<List<Integer>> result) {
-        if (curlist.size() == nums.length) {
-            result.add(new ArrayList<>(curlist));
-        }
-        for (int i = 0; i < nums.length; i++) {
-            if (i > 0 && nums[i] == nums[i - 1] && visited[i-1]==0) continue;
-            if (visited[i] == 0) {
-                visited[i] = 1;
-                curlist.add(nums[i]);
-                helper(nums, visited, curlist, result);
-                visited[i] = 0;
-                curlist.remove(curlist.size() - 1);
+    List<List<Integer>> list=new ArrayList<List<Integer>>();
+    int fr_ar[][],newn=0;
+    
+    void go(List ll){
+        int flag=0;
+        for(int i=0;i<newn;i++){
+            if(fr_ar[i][1]>0){
+                fr_ar[i][1]--;
+                List<Integer> newlist=new ArrayList<Integer>(ll);
+                newlist.add(fr_ar[i][0]);
+                go(newlist);
+                fr_ar[i][1]++;
+                flag=1;
             }
         }
+        if(flag==0) list.add(ll);
+    }
+    
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        HashMap<Integer,Integer> map=new HashMap<Integer,Integer>();
+        int i,n=nums.length;
+        for(i=0;i<n;i++){
+            if(!map.containsKey(nums[i])){
+                map.put(nums[i],1);
+                newn++;
+            }else map.put(nums[i],map.get(nums[i])+1);
+        }
+        fr_ar=new int[newn][2];i=0;
+        for (Map.Entry<Integer,Integer> entry : map.entrySet()) {
+            fr_ar[i][0]=entry.getKey();
+            fr_ar[i][1]=entry.getValue();
+            i++;
+        }
+        go(new ArrayList<Integer>());        
+        return list;
     }
 }
