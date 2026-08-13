@@ -1,34 +1,24 @@
-import java.util.*;
-
 class Solution {
-    Set<List<Integer>> set = new HashSet<>();
-
-    public void check(int index, int[] nums, List<List<Integer>> result) {
-        if (index == nums.length) {
-            List<Integer> current = new ArrayList<>();
-            for (int num : nums) current.add(num);
-            if (!set.contains(current)) {
-                result.add(new ArrayList<>(current));
-                set.add(current);
-            }
+    List<List<Integer>> res=new ArrayList<>();
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        List<Integer> list=new ArrayList<>();
+        boolean[] used=new boolean[nums.length];
+        permutations(nums,used,list);
+        return res;
+    }
+    public void permutations(int[] nums,boolean[] used,List<Integer>list){
+        if(list.size()==nums.length){
+            res.add(new ArrayList<>(list));
             return;
         }
-        for (int i = index; i < nums.length; i++) {
-            swap(nums, index, i);
-            check(index + 1, nums, result);
-            swap(nums, index, i);
+        for(int i=0;i<nums.length;i++){
+            if( (i>0 && nums[i]==nums[i-1]) && !used[i-1] || (used[i]) ) continue;
+            list.add(nums[i]);
+            used[i]=true;
+            permutations(nums,used,list);
+            list.remove(list.size()-1);
+            used[i]=false;
         }
-    }
-
-    public List<List<Integer>> permuteUnique(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
-        check(0, nums, result);
-        return result;
-    }
-
-    private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
     }
 }
