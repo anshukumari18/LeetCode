@@ -1,31 +1,36 @@
 class Solution {
     public boolean isMatch(String s, String p) {
-        boolean dp[][] = new boolean[p.length()+1][s.length()+1];
-        for(int i = dp.length-1; i >= 0; i--) {
-            for(int j = dp[0].length-1; j >= 0; j--) {
-                if(i == dp.length-1 && j == dp[0].length-1) {
-                    dp[i][j] = true;
-                } else if(i == dp.length-1) {
-                    dp[i][j] = false;
-                } else if(j == dp[0].length-1) {
-                    if(p.charAt(i) == '*') {
-                        dp[i][j] = dp[i+1][j];
-                    } else {
-                        dp[i][j] = false;
-                    }
-                } else {
-                    if(p.charAt(i) == '?') {
-                        dp[i][j] = dp[i+1][j+1];
-                    } else if(p.charAt(i) == '*') {
-                        dp[i][j] = dp[i+1][j] || dp[i][j+1];
-                    } else if(p.charAt(i) == s.charAt(j)) {
-                        dp[i][j] = dp[i+1][j+1];
-                    } else {
-                        dp[i][j] = false;
-                    }
-                }
+        int i=0;
+        int j=0;
+        int starIdx=-1;
+        int lastMatch=-1;
+        
+        while(i<s.length()){
+            if(j<p.length() && (s.charAt(i)==p.charAt(j) || 
+              p.charAt(j)=='?')){
+                i++;
+                j++;
+            }else if(j<p.length() && p.charAt(j)=='*'){
+                starIdx=j;
+                lastMatch=i;
+                j++;
+            }else if(starIdx!=-1){
+            //there is a no match and there was a previous star, we will reset the j to indx after star_index
+            //lastMatch will tell from which index we start comparing the string if we encounter * in pattern
+                j=starIdx+1;
+                lastMatch++; // we are saying we included more characters in * so we incremented the index 
+                i=lastMatch;
+                
+            }else{
+                return false;
             }
         }
-        return dp[0][0];
+        
+        while(j<p.length() && p.charAt(j)=='*') j++;
+        
+        if(i!=s.length() || j!=p.length()) return false;
+        
+        return true;
+     
     }
 }
