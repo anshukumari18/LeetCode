@@ -1,32 +1,44 @@
 class Solution {
+    Boolean[][] dp;
+
     public boolean isMatch(String s, String p) {
-        int i=0,j=0,si=-1,m=0;
-        char S[]=s.toCharArray();
-        char P[]=p.toCharArray();
-        int ns=s.length();
-        int np=p.length();
-        while(i<ns){
-            if(j<np&&(S[i]==P[j]||P[j]=='?')){
-                j++;
-                i++;
+        dp = new Boolean[s.length() + 1][p.length() + 1];
+        return match(s, p, 0, 0);
+    }
+
+    private boolean match(String s, String p, int i, int j) {
+
+        // Memo check
+        if (dp[i][j] != null)
+            return dp[i][j];
+
+        // Pattern finished
+        if (j == p.length())
+            return dp[i][j] = (i == s.length());
+
+        // String finished
+        if (i == s.length()) {
+            for (int k = j; k < p.length(); k++) {
+                if (p.charAt(k) != '*')
+                    return dp[i][j] = false;
             }
-            else if(j<np&&P[j]=='*'){
-                si=j;
-                m=i;
-                j++;
-            }
-            else if(si!=-1){
-                j=si+1;
-                m++;
-                i=m;
-            }
-            else{
-                return false;
-            }
+            return dp[i][j] = true;
         }
-        while(j<np&&P[j]=='*'){
-            j++;
+
+        char pc = p.charAt(j);
+
+        // Case 1: '*'
+        if (pc == '*') {
+            return dp[i][j] =
+                    match(s, p, i, j + 1) ||   // zero characters
+                    match(s, p, i + 1, j);     // one or more characters
         }
-        return j==np;
+
+        // Case 2: '?' or exact match
+        if (pc == '?' || s.charAt(i) == pc) {
+            return dp[i][j] = match(s, p, i + 1, j + 1);
+        }
+
+        return dp[i][j] = false;
     }
 }
