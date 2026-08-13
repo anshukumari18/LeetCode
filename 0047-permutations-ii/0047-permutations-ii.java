@@ -1,38 +1,44 @@
 class Solution {
-    List<List<Integer>> list=new ArrayList<List<Integer>>();
-    int fr_ar[][],newn=0;
-    
-    void go(List ll){
-        int flag=0;
-        for(int i=0;i<newn;i++){
-            if(fr_ar[i][1]>0){
-                fr_ar[i][1]--;
-                List<Integer> newlist=new ArrayList<Integer>(ll);
-                newlist.add(fr_ar[i][0]);
-                go(newlist);
-                fr_ar[i][1]++;
-                flag=1;
-            }
-        }
-        if(flag==0) list.add(ll);
-    }
+    List<List<Integer>> res;
     
     public List<List<Integer>> permuteUnique(int[] nums) {
-        HashMap<Integer,Integer> map=new HashMap<Integer,Integer>();
-        int i,n=nums.length;
-        for(i=0;i<n;i++){
-            if(!map.containsKey(nums[i])){
-                map.put(nums[i],1);
-                newn++;
-            }else map.put(nums[i],map.get(nums[i])+1);
-        }
-        fr_ar=new int[newn][2];i=0;
-        for (Map.Entry<Integer,Integer> entry : map.entrySet()) {
-            fr_ar[i][0]=entry.getKey();
-            fr_ar[i][1]=entry.getValue();
-            i++;
-        }
-        go(new ArrayList<Integer>());        
-        return list;
+        res = new LinkedList<List<Integer>>();
+    
+        dfs(0, nums);
+        
+        return res;
+            
     }
+    
+    private void dfs(int idx, int[] nums){
+        if(idx == nums.length - 1){
+            List<Integer> list = new ArrayList<>();
+            for(int i : nums){
+                list.add(i);
+            }
+            
+            res.add(list);
+            return;
+        }
+        dfs(idx + 1, nums);
+        
+        Set<Integer> set = new HashSet<>();
+        
+        for(int i = idx + 1; i < nums.length; i++){
+            
+            if(nums[idx] != nums[i] && set.add(nums[i])){
+                swap(idx, i, nums);
+                dfs(idx + 1, nums);
+                swap(idx, i, nums);
+            }
+        }
+    }
+    
+    private void swap(int a, int b, int[] nums){
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
+    }
+    
+    
 }
