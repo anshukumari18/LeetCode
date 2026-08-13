@@ -1,20 +1,23 @@
 class Solution {
-    public double myPow(double x, int n) {
-        double ans=1.0;
-        long nn=n;
-        if(nn<0) nn=-1*nn;
-        while(nn>0){
-            if(nn%2==1){
-                ans = ans *x;
-                nn=nn-1;
-            }
-            else{
-                x=x*x;
-                nn=nn/2;
-            }
+    public double calpow(double x, long n) {
+        if (n == 0) return 1;
+        if (n == 1) return x;
+
+        double half = calpow(x, n / 2);
+
+        if (n % 2 == 1) {
+            return half * half*x;
+        } else {
+            return half * half;
         }
-        if(n<0)
-        ans = (double)(1.0)/(double)(ans);
-        return ans;
+    }
+
+    public double myPow(double x, int n) {
+        long N = n;  // promote to long
+        if (N >= 0) {
+            return calpow(x, N);
+        } else {
+            return 1.0 / calpow(x, -N);
+        }
     }
 }
