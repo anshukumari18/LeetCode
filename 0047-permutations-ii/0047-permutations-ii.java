@@ -1,32 +1,25 @@
 class Solution {
-    public static void helper(List<Integer> num, List<List<Integer>> res, List<Integer> temp) {
-        if (num.size() == 0) {
-            res.add(new ArrayList<>(temp));
-            return;
-        }
-        for (int i = 0; i < num.size(); i++) {
-            while (i + 1 < num.size() && num.get(i) == num.get(i + 1)) {
-                i += 1;
-            }
-            temp.add(num.get(i));
-
-            List<Integer> newNums = new ArrayList<>(num);
-            newNums.remove(i);
-
-            helper(newNums, res, temp);
-            temp.remove(temp.size() - 1);
-        }
-    }
     public List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
         Arrays.sort(nums);
+        permu(ans, new ArrayList<>(), nums, new boolean[nums.length]);
+        return ans;
+    }
 
-        List<List<Integer>> res = new ArrayList<>();
-        List<Integer> temp = new ArrayList<>();
-        List<Integer> num = new ArrayList<>();
-        for (int x : nums) {
-            num.add(x);
+    private void permu(List<List<Integer>> ans, List<Integer> subans, int[] nums, boolean[] b) {
+        if(subans.size() == nums.length){
+            ans.add(new ArrayList<>(subans));
+        } else {
+            for(int i = 0; i < nums.length; i++) {
+                if(b[i] || i > 0 && nums[i] == nums[i-1] && !b[i - 1]){
+                    continue;
+                }
+                b[i] = true;
+                subans.add(nums[i]);
+                permu(ans, subans, nums, b);
+                b[i] = false;
+                subans.remove(subans.size() - 1);
+            }
         }
-        helper(num, res, temp);
-        return res;
     }
 }
