@@ -1,34 +1,34 @@
+import java.util.*;
+
 class Solution {
-    private List<List<Integer>> result = new ArrayList<>();
+    Set<List<Integer>> set = new HashSet<>();
+
+    public void check(int index, int[] nums, List<List<Integer>> result) {
+        if (index == nums.length) {
+            List<Integer> current = new ArrayList<>();
+            for (int num : nums) current.add(num);
+            if (!set.contains(current)) {
+                result.add(new ArrayList<>(current));
+                set.add(current);
+            }
+            return;
+        }
+        for (int i = index; i < nums.length; i++) {
+            swap(nums, index, i);
+            check(index + 1, nums, result);
+            swap(nums, index, i);
+        }
+    }
 
     public List<List<Integer>> permuteUnique(int[] nums) {
-        Arrays.sort(nums);
-        boolean[] used = new boolean[nums.length];
-        backtrack(nums, used, new ArrayList<>());
+        List<List<Integer>> result = new ArrayList<>();
+        check(0, nums, result);
         return result;
     }
 
-    private void backtrack(int[] nums, boolean[] used, List<Integer> current) {
-        if (current.size() == nums.length) {
-            result.add(new ArrayList<>(current));
-            return;
-        }
-
-        for (int i = 0; i < nums.length; i++) {
-            if (used[i]) continue;
-
-            // Skip duplicates
-            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
-                continue;
-            }
-
-            used[i] = true;
-            current.add(nums[i]);
-
-            backtrack(nums, used, current);
-
-            current.remove(current.size() - 1);
-            used[i] = false;
-        }
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 }
