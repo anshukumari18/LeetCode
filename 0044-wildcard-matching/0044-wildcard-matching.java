@@ -1,20 +1,31 @@
 class Solution {
     public boolean isMatch(String s, String p) {
-        Boolean[][]arr=new Boolean[s.length()][p.length()];
-        return helper(s,p,arr,s.length()-1,p.length()-1);
-    }
-    public static boolean helper(String text1,String text2, Boolean[][]dp,int index1,int index2){
-        if(index1<0&&index2<0)return true;
-        if(index1>=0&&index2<0)return false;
-        if(index1<0&&index2>=0){
-            for(int i=index2;i>=0;i--){
-                if(text2.charAt(i)!='*')return false;
+        boolean dp[][] = new boolean[p.length()+1][s.length()+1];
+        for(int i = dp.length-1; i >= 0; i--) {
+            for(int j = dp[0].length-1; j >= 0; j--) {
+                if(i == dp.length-1 && j == dp[0].length-1) {
+                    dp[i][j] = true;
+                } else if(i == dp.length-1) {
+                    dp[i][j] = false;
+                } else if(j == dp[0].length-1) {
+                    if(p.charAt(i) == '*') {
+                        dp[i][j] = dp[i+1][j];
+                    } else {
+                        dp[i][j] = false;
+                    }
+                } else {
+                    if(p.charAt(i) == '?') {
+                        dp[i][j] = dp[i+1][j+1];
+                    } else if(p.charAt(i) == '*') {
+                        dp[i][j] = dp[i+1][j] || dp[i][j+1];
+                    } else if(p.charAt(i) == s.charAt(j)) {
+                        dp[i][j] = dp[i+1][j+1];
+                    } else {
+                        dp[i][j] = false;
+                    }
+                }
             }
-            return true;
         }
-        if(dp[index1][index2]!=null)return dp[index1][index2];
-        if(text1.charAt(index1)==text2.charAt(index2)||text2.charAt(index2)=='?')return dp[index1][index2]=helper(text1,text2,dp,index1-1,index2-1);
-        if(text2.charAt(index2)=='*')return dp[index1][index2]=helper(text1,text2,dp,index1-1,index2)||helper(text1,text2,dp,index1,index2-1);
-        return false;
+        return dp[0][0];
     }
 }
