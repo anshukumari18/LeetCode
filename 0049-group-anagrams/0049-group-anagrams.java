@@ -1,20 +1,32 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 class Solution {
-    public List<List<String>> groupAnagrams(String[] strs) {
-        HashMap<String,List<String>> map=new HashMap<>();
+    public List<List<String>> groupAnagrams(String[] words) {
+        // Map to store anagram groups
+        Map<String, List<String>> anagramGroups = new HashMap<>();
         
-        for(int i=0;i<strs.length;i++){
-            String s1=strs[i];
-            char[] arr=s1.toCharArray();
-            Arrays.sort(arr);
-            String str=new String(arr);
+        // Iterate through each word in the input array
+        for (String word : words) {
+            // Sort the characters in the word to create a key
+            char[] charArray = word.toCharArray();
+            Arrays.sort(charArray);
+            String key = new String(charArray);
             
-            if(map.containsKey(str)){
-                map.get(str).add(s1); 
-            }else{
-                map.put(str,new ArrayList<>());
-                map.get(str).add(s1);
+            // If key is not in the map, add a new entry with the word as a list
+            if (!anagramGroups.containsKey(key)) {
+                anagramGroups.put(key, new ArrayList<>(List.of(word)));
+            }
+            // If key is already present, append the word to the existing list
+            else {
+                anagramGroups.get(key).add(word);
             }
         }
-        return new ArrayList<>(map.values());
+        
+        // Convert map values to a list and return
+        return new ArrayList<>(anagramGroups.values());
     }
 }
