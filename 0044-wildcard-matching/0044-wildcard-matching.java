@@ -1,36 +1,20 @@
 class Solution {
     public boolean isMatch(String s, String p) {
-        int i=0;
-        int j=0;
-        int starIdx=-1;
-        int lastMatch=-1;
-        
-        while(i<s.length()){
-            if(j<p.length() && (s.charAt(i)==p.charAt(j) || 
-              p.charAt(j)=='?')){
-                i++;
-                j++;
-            }else if(j<p.length() && p.charAt(j)=='*'){
-                starIdx=j;
-                lastMatch=i;
-                j++;
-            }else if(starIdx!=-1){
-            //there is a no match and there was a previous star, we will reset the j to indx after star_index
-            //lastMatch will tell from which index we start comparing the string if we encounter * in pattern
-                j=starIdx+1;
-                lastMatch++; // we are saying we included more characters in * so we incremented the index 
-                i=lastMatch;
-                
-            }else{
-                return false;
+        Boolean[][]arr=new Boolean[s.length()][p.length()];
+        return helper(s,p,arr,s.length()-1,p.length()-1);
+    }
+    public static boolean helper(String text1,String text2, Boolean[][]dp,int index1,int index2){
+        if(index1<0&&index2<0)return true;
+        if(index1>=0&&index2<0)return false;
+        if(index1<0&&index2>=0){
+            for(int i=index2;i>=0;i--){
+                if(text2.charAt(i)!='*')return false;
             }
+            return true;
         }
-        
-        while(j<p.length() && p.charAt(j)=='*') j++;
-        
-        if(i!=s.length() || j!=p.length()) return false;
-        
-        return true;
-     
+        if(dp[index1][index2]!=null)return dp[index1][index2];
+        if(text1.charAt(index1)==text2.charAt(index2)||text2.charAt(index2)=='?')return dp[index1][index2]=helper(text1,text2,dp,index1-1,index2-1);
+        if(text2.charAt(index2)=='*')return dp[index1][index2]=helper(text1,text2,dp,index1-1,index2)||helper(text1,text2,dp,index1,index2-1);
+        return false;
     }
 }
