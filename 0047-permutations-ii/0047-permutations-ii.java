@@ -1,27 +1,26 @@
 class Solution {
-    public List<List<Integer>> permuteUnique(int[] arr) {
-        List<List<Integer>> res=new ArrayList<>();
-        Arrays.sort(arr);
-        boolean used[]=new boolean[arr.length];
-        fun(new ArrayList<>(),used,res,arr);
-        return res;
+    public static List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums == null || nums.length == 0) return result;
+        int n = nums.length;
+        int[] visited = new int[n];
+        Arrays.sort(nums);
+        helper(nums, visited, new ArrayList<>(), result);
+        return result;
     }
 
-    public void fun(List<Integer> li,boolean used[],List<List<Integer>> res,int arr[]){
-        if(li.size()==arr.length){
-            res.add(new ArrayList<>(li));
-            return;
+    public static void helper(int[] nums, int[] visited, List<Integer> curlist, List<List<Integer>> result) {
+        if (curlist.size() == nums.length) {
+            result.add(new ArrayList<>(curlist));
         }
-
-        int lastused=Integer.MIN_VALUE;
-        for(int i=0;i<arr.length;i++){
-            if(used[i]==false && lastused!=arr[i]){
-                used[i]=true;
-                li.add(arr[i]);
-                lastused=arr[i];
-                fun(li,used,res,arr);
-                used[i]=false;
-                li.remove(li.size()-1);
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1] && visited[i-1]==0) continue;
+            if (visited[i] == 0) {
+                visited[i] = 1;
+                curlist.add(nums[i]);
+                helper(nums, visited, curlist, result);
+                visited[i] = 0;
+                curlist.remove(curlist.size() - 1);
             }
         }
     }
