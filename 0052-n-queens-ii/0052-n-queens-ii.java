@@ -1,56 +1,21 @@
 class Solution {
-    int count = 0;
     public int totalNQueens(int n) {
-       
-        char[][] board = new char[n][n];
-
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < n; j++){
-                board[i][j] = '.';
-            }
-        }
-        nqueen(board, 0, n);
-        return count;
+        return solve(0, 0, 0, 0, n);
     }
-    private void nqueen(char[][] board, int row, int n){
+    
+    private int solve(int row, int cols, int diags, int antiDiags, int n) {
+        if (row == n)
+            return 1;
 
-        // Base case
-        if(row == n){
-            count++;
-            return;
-        }
-        for(int col = 0; col < n; col++){
-            if(isSafe(board,row,col,n)){
-                board[row][col] = 'Q';
+        int availablePositions = ((1 << n) - 1) & ~(cols | diags | antiDiags);
 
-                nqueen(board, row+1, n);
+        int solutions = 0;
+        while (availablePositions != 0) {
+            int pos = availablePositions & -availablePositions;
+            availablePositions &= availablePositions - 1;
+            solutions += solve(row + 1, cols | pos, (diags | pos) << 1, (antiDiags | pos) >> 1, n);
+        }
 
-                board[row][col] = '.';
-            }
-        }
-    }
-    private boolean isSafe(char[][] board, int row ,int col, int n){
-        int i,j;
-        // chech column
-        for( i = 0; i < n; i++){
-           if(board[i][col] == 'Q') return false;
-        }
-        // check /
-         i = row;
-         j = col;
-        while(i >= 0 && j < n){
-            if(board[i][j] == 'Q') return false;
-            i--;
-            j++;
-        }
-        // check \
-        i = row;
-        j = col;
-        while(i >= 0 && j >= 0){
-            if(board[i][j] == 'Q') return false;
-            i--;
-            j--; 
-    }
-    return true;
+        return solutions;
     }
 }
