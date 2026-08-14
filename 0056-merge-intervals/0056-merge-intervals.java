@@ -1,41 +1,40 @@
 class Solution {
     public int[][] merge(int[][] intervals) {
-        Arrays.sort(intervals, (a, b) -> {
-		    if(a[0]!=b[0]) return a[0] - b[0];
-		    else return a[1]-b[1];
-		    });
 
-        int start = intervals[0][0];
-        int end = intervals[0][1];
-        int currStart = intervals[0][0];
-        int currEnd = intervals[0][1];
+        if(intervals.length == 1){
+            return intervals;
+        }
 
-        List<int[]> list = new ArrayList<>();
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
 
-        int i = 0, n = intervals.length;
-        while(i < n-1) {
-            if(end < currEnd) {
-                end = currEnd;
-            }
-            i++;
-            currStart = intervals[i][0];
-            currEnd = intervals[i][1];
-            if(end < currStart) {
-                list.add(new int[] {start, end});
-                start = currStart;
-                end = currEnd;
+        //[[1,3],[2,6],[8,10],[15,18]]
+        int[] curr = intervals[0];//[8,10]
+        List<Integer> l = null;
+        List<List<Integer>> ll = new ArrayList<>();
+        for(int i = 1; i < intervals.length; i++){
+            if(curr[1] >= intervals[i][0]){//merge condition
+                curr[0] = Math.min(curr[0], intervals[i][0]);
+                curr[1] = Math.max(curr[1], intervals[i][1]);
+            }else{
+                l = Arrays.asList(curr[0], curr[1]);
+                ll.add(l);
+
+                curr[0] = intervals[i][0];
+                curr[1] = intervals[i][1];
             }
         }
-        if(end < intervals[i][1]){
-            end = intervals[i][1];
+    
+        l = Arrays.asList(curr[0], curr[1]);
+        ll.add(l);
+        
+        int[][] res = new int[ll.size()][2];
+        int k = 0;
+        for(List<Integer> e : ll){
+            res[k][0] = e.get(0);
+            res[k][1] = e.get(1);
+            k++;
         }
-        list.add(new int[] {start, end});
 
-        int[][] output = new int[list.size()][2];
-        for(int k = 0; k < list.size(); k++) {
-            output[k][0] = list.get(k)[0];
-            output[k][1] = list.get(k)[1];
-        }
-        return output;
+        return res;
     }
 }
