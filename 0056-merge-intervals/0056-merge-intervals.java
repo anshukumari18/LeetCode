@@ -1,43 +1,41 @@
 class Solution {
     public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, (a, b) -> {
+		    if(a[0]!=b[0]) return a[0] - b[0];
+		    else return a[1]-b[1];
+		    });
 
-        int n = intervals.length;
-        if(n == 1){
-            return intervals;
-        }
+        int start = intervals[0][0];
+        int end = intervals[0][1];
+        int currStart = intervals[0][0];
+        int currEnd = intervals[0][1];
 
-        Arrays.sort(intervals,(a,b) -> {
-            return a[0] - b[0];
-        });
+        List<int[]> list = new ArrayList<>();
 
-        List<List<Integer>> result = new ArrayList<>();
-
-        int i = 1;
-        int j = 0;
-
-        while(j < n){
-
-            int start = intervals[j][0];
-            int end = intervals[j][1];
-            
-            while((i < n) && (intervals[i][0] <= end)){
-                end = Math.max(end,intervals[i][1]);
-                i++;
+        int i = 0, n = intervals.length;
+        while(i < n-1) {
+            if(end < currEnd) {
+                end = currEnd;
             }
-
-            result.add(Arrays.asList(start,end));
-
-            j = i;
             i++;
+            currStart = intervals[i][0];
+            currEnd = intervals[i][1];
+            if(end < currStart) {
+                list.add(new int[] {start, end});
+                start = currStart;
+                end = currEnd;
+            }
         }
-
-        int[][] resArray = new int[result.size()][2];
-        for(int k = 0; k < result.size(); k++){
-            List<Integer> interval = result.get(k);
-            resArray[k][0] = interval.get(0);
-            resArray[k][1] = interval.get(1);
+        if(end < intervals[i][1]){
+            end = intervals[i][1];
         }
+        list.add(new int[] {start, end});
 
-        return resArray;        
+        int[][] output = new int[list.size()][2];
+        for(int k = 0; k < list.size(); k++) {
+            output[k][0] = list.get(k)[0];
+            output[k][1] = list.get(k)[1];
+        }
+        return output;
     }
 }
