@@ -153,6 +153,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | [0040-combination-sum-ii](https://github.com/anshukumari18/LeetCode/tree/master/0040-combination-sum-ii) |
 | [0047-permutations-ii](https://github.com/anshukumari18/LeetCode/tree/master/0047-permutations-ii) |
 | [0051-n-queens](https://github.com/anshukumari18/LeetCode/tree/master/0051-n-queens) |
+| [0052-n-queens-ii](https://github.com/anshukumari18/LeetCode/tree/master/0052-n-queens-ii) |
 ## Linked List
 |  |
 | ------- |
@@ -216,6 +217,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | ------- |
 | [0037-sudoku-solver](https://github.com/anshukumari18/LeetCode/tree/master/0037-sudoku-solver) |
 | [0051-n-queens](https://github.com/anshukumari18/LeetCode/tree/master/0051-n-queens) |
+| [0052-n-queens-ii](https://github.com/anshukumari18/LeetCode/tree/master/0052-n-queens-ii) |
 ## Dancing Links
 |  |
 | ------- |
