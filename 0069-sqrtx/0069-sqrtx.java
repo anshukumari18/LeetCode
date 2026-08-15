@@ -1,21 +1,25 @@
 class Solution {
     public int mySqrt(int x) {
-        int low = 0, high = x, ans = -1;
+        // Edge case: square root of 0 is 0
+        if (x == 0) return 0;
 
-        while (low <= high) {
-            long mid = (low + high) / 2;
-            long midsq = mid * mid;
+        int left = 1, right = x;
+        int ans = 0;
 
-            if (midsq == x)
-                return (int)mid;
-            else if (midsq > x)
-                high = (int)mid - 1;
-            else {
-                ans = (int)mid;
-                low = (int)mid + 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            long square = (long) mid * mid;
+
+            if (square == x) {
+                return mid; // perfect square
+            } else if (square < x) {
+                ans = mid; // store as possible answer
+                left = mid + 1; // look for bigger
+            } else {
+                right = mid - 1; // look for smaller
             }
         }
 
-        return ans;
+        return ans; // closest integer sqrt
     }
 }
