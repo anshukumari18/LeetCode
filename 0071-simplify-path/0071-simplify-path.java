@@ -1,33 +1,29 @@
 class Solution {
     public String simplifyPath(String path) {
+        String[] arr = path.split("/");
+        Stack<String> stack = new Stack();
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i].trim() != "") {
+                stack.push(arr[i]);
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        while (!stack.isEmpty()) {
+            String s = stack.pop();
 
-        Stack<String> st = new Stack<>();
-        String[] components = path.split("/");
-
-        for (String component : components) {
-
-            if (component.equals("") || component.equals(".")) {
+            if (s.equals("..")) {
+                count++;
+            } else if (s.equals(".")) {
                 continue;
-            }
-
-            if (component.equals("..")) {
-                if (!st.isEmpty()) {
-                    st.pop();
-                }
             } else {
-                st.push(component);
+                if (count == 0) {
+                    sb.insert(0, "/" + s);
+                } else {
+                    count--;
+                }
             }
         }
-
-        if (st.isEmpty()) {
-            return "/";
-        }
-
-        StringBuilder res = new StringBuilder();
-        for (String dir : st) {
-            res.append("/").append(dir);
-        }
-
-        return res.toString();
+        return sb.toString().length() == 0 ? "/" : sb.toString();
     }
 }
