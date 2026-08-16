@@ -1,29 +1,37 @@
+import java.util.Stack;
+import java.util.Arrays;
+
 class Solution {
-    public String simplifyPath(String path) {
-        String token[]=path.split("/");
-        int n=token.length;
+    public String simplifyPath(String s) {
+        Stack<String> stack = new Stack<>();
         
-        StringBuilder sb=new StringBuilder();
-        int skip=0;
-        for(int i=n-1;i>=0;i--){
-            if(token[i].trim().equals(""))continue;
-            if(token[i].equals("..")){
-                skip++;
+        // Split the path by '/'
+        String[] components = s.split("/");
+        
+        for (String component : components) {
+            if (component.equals(".") || component.isEmpty()) {
+                // Ignore '.' and empty strings
                 continue;
+            } else if (component.equals("..")) {
+                // Pop from stack for '..'
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
+            } else {
+                // Push valid directory names
+                stack.push(component);
             }
-            if(token[i].equals("."))continue;
-
-            if(skip>0){
-                skip--;
-                continue;
-            }
-
-            sb.insert(0,"/"+token[i]);
-            
-
-            
         }
-
-        return sb.length()==0?"/":sb.toString();
+        
+        if (stack.isEmpty()) {
+            return "/";
+        }
+        
+        StringBuilder ans = new StringBuilder();
+        for (String dir : stack) {
+            ans.append("/").append(dir);
+        }
+        
+        return ans.toString();
     }
 }
