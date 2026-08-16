@@ -1,23 +1,33 @@
-import java.util.*;
-
 class Solution {
     public String simplifyPath(String path) {
-        Deque<String> stack = new LinkedList<>();
-        
-        for (String dir : path.split("/")) {
-            if (dir.isEmpty() || dir.equals(".")) continue;
-            if (dir.equals("..")) {
-                if (!stack.isEmpty()) stack.pop();
+
+        Stack<String> st = new Stack<>();
+        String[] components = path.split("/");
+
+        for (String component : components) {
+
+            if (component.equals("") || component.equals(".")) {
+                continue;
+            }
+
+            if (component.equals("..")) {
+                if (!st.isEmpty()) {
+                    st.pop();
+                }
             } else {
-                stack.push(dir);
+                st.push(component);
             }
         }
-        
-        StringBuilder result = new StringBuilder();
-        while (!stack.isEmpty()) {
-            result.insert(0, "/" + stack.pop());
+
+        if (st.isEmpty()) {
+            return "/";
         }
-        
-        return result.length() == 0 ? "/" : result.toString();
+
+        StringBuilder res = new StringBuilder();
+        for (String dir : st) {
+            res.append("/").append(dir);
+        }
+
+        return res.toString();
     }
 }
