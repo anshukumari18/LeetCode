@@ -1,37 +1,23 @@
-import java.util.Stack;
-import java.util.Arrays;
+import java.util.*;
 
 class Solution {
-    public String simplifyPath(String s) {
-        Stack<String> stack = new Stack<>();
+    public String simplifyPath(String path) {
+        Deque<String> stack = new LinkedList<>();
         
-        // Split the path by '/'
-        String[] components = s.split("/");
-        
-        for (String component : components) {
-            if (component.equals(".") || component.isEmpty()) {
-                // Ignore '.' and empty strings
-                continue;
-            } else if (component.equals("..")) {
-                // Pop from stack for '..'
-                if (!stack.isEmpty()) {
-                    stack.pop();
-                }
+        for (String dir : path.split("/")) {
+            if (dir.isEmpty() || dir.equals(".")) continue;
+            if (dir.equals("..")) {
+                if (!stack.isEmpty()) stack.pop();
             } else {
-                // Push valid directory names
-                stack.push(component);
+                stack.push(dir);
             }
         }
         
-        if (stack.isEmpty()) {
-            return "/";
+        StringBuilder result = new StringBuilder();
+        while (!stack.isEmpty()) {
+            result.insert(0, "/" + stack.pop());
         }
         
-        StringBuilder ans = new StringBuilder();
-        for (String dir : stack) {
-            ans.append("/").append(dir);
-        }
-        
-        return ans.toString();
+        return result.length() == 0 ? "/" : result.toString();
     }
 }
