@@ -1,17 +1,33 @@
 class Solution {
-    public List<List<Integer>> subsets(int[] nums) {
-        List<List<Integer>> outer = new ArrayList<>();
-        outer.add(new ArrayList<>());
+    List<List<Integer>> Ans = new ArrayList<>();
+    int n;
 
-        for(int num : nums){
-            int n = outer.size();
-            for(int i = 0; i < n; i++){
-                // Create a new subset from existing one
-                List<Integer> internal = new ArrayList<>(outer.get(i));
-                internal.add(num);
-                outer.add(internal); // Add it to the list
-            }
+    public List<List<Integer>> subsets(int[] nums) {
+        List<Integer> op = new ArrayList<>();
+        n = nums.length;
+
+        // call the helper function
+        Helper(op, nums, 0);
+
+        return Ans;
+    }
+
+    public void Helper(List<Integer> op, int[] nums, int startIndex) {
+        // base case
+        if (startIndex == n) {
+            Ans.add(new ArrayList<>(op));
+            return;
         }
-        return outer;
+
+        // recursive case
+        // choice 1: include the current element
+        op.add(nums[startIndex]);
+        Helper(op, nums, startIndex + 1);
+
+        // backtracking step
+        op.remove(op.size() - 1);
+
+        // choice 2: exclude the current element
+        Helper(op, nums, startIndex + 1);
     }
 }
