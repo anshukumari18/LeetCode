@@ -1,27 +1,24 @@
 class Solution {
     public int largestRectangleArea(int[] heights) {
-        int n=heights.length;
-        int[] prev=new int[n];
-        int[] next=new int[n];
-        Arrays.fill(prev,-1);
-        Arrays.fill(next,n);
-        Stack<Integer> s1=new Stack<>();
-        for(int i=0;i<n;i++){
-            while(!s1.isEmpty() && heights[i]<heights[s1.peek()]){
-                int index=s1.pop();
-                next[index]=i;
-            }
-            if(!s1.isEmpty()){
-                 prev[i]=s1.peek();
-            }
-            s1.push(i);
+        int n = heights.length;
+        int nse[] = new int[n];
+        for(int i=n-1;i>=0;i--){
+            nse[i] = i+1;
+            while(nse[i] != n && heights[nse[i]] >= heights[i])
+                nse[i] = nse[nse[i]];
         }
-        int ans=0;
+        int pse[] = new int[n];
         for(int i=0;i<n;i++){
-           int width=next[i]-prev[i]-1;
-           int area=width*heights[i];
-           ans=Math.max(ans,area);
-        } 
-        return ans;
+            pse[i]=i-1;
+            while(pse[i] != -1 && heights[pse[i]] >= heights[i])
+                pse[i] = pse[pse[i]];
+        }
+        int ar = 0;
+        for(int i=0;i<n;i++){
+            int h = heights[i];
+            int wid = nse[i] - pse[i] - 1;
+            ar = Math.max(ar, h * wid);
+        }
+        return ar;
     }
 }
