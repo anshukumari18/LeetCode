@@ -1,28 +1,27 @@
 class Solution {
-    public int largestRectangleArea(int[] h) {
-        int ans= -1;
-        Stack<Integer> s= new Stack<>();
-        for(int i=0; i<h.length; i++){
-        while(!s.isEmpty()&& h[i]<h[s.peek()] ){
-            int element= s.pop();
-int pse= s.isEmpty()? -1: s.peek();
-int nse=i;
-            ans= Math.max(ans,h[element]*(nse-pse-1));
+    public int largestRectangleArea(int[] heights) {
+        int n=heights.length;
+        int[] prev=new int[n];
+        int[] next=new int[n];
+        Arrays.fill(prev,-1);
+        Arrays.fill(next,n);
+        Stack<Integer> s1=new Stack<>();
+        for(int i=0;i<n;i++){
+            while(!s1.isEmpty() && heights[i]<heights[s1.peek()]){
+                int index=s1.pop();
+                next[index]=i;
+            }
+            if(!s1.isEmpty()){
+                 prev[i]=s1.peek();
+            }
+            s1.push(i);
         }
-        s.push(i);
-        }
-        while(!s.isEmpty()){
-            int nse= h.length;
-             int element= s.pop();
-            int pse=  s.isEmpty()? -1: s.peek();
-            ans= Math.max(ans,h[element]*(nse-pse-1));
-        }
-
-
+        int ans=0;
+        for(int i=0;i<n;i++){
+           int width=next[i]-prev[i]-1;
+           int area=width*heights[i];
+           ans=Math.max(ans,area);
+        } 
         return ans;
     }
 }
-//traverse in one direc using loop and in other using 
-//stack . when poping u get the pse and i is ur nse
-// can find area and if st has vlaues means nse is n now 
-//can go for pse
