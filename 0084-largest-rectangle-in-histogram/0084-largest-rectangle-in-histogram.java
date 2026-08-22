@@ -1,24 +1,28 @@
 class Solution {
-    public int largestRectangleArea(int[] heights) {
-        int n = heights.length;
-        int nse[] = new int[n];
-        for(int i=n-1;i>=0;i--){
-            nse[i] = i+1;
-            while(nse[i] != n && heights[nse[i]] >= heights[i])
-                nse[i] = nse[nse[i]];
+    public int largestRectangleArea(int[] h) {
+        int ans= -1;
+        Stack<Integer> s= new Stack<>();
+        for(int i=0; i<h.length; i++){
+        while(!s.isEmpty()&& h[i]<h[s.peek()] ){
+            int element= s.pop();
+int pse= s.isEmpty()? -1: s.peek();
+int nse=i;
+            ans= Math.max(ans,h[element]*(nse-pse-1));
         }
-        int pse[] = new int[n];
-        for(int i=0;i<n;i++){
-            pse[i]=i-1;
-            while(pse[i] != -1 && heights[pse[i]] >= heights[i])
-                pse[i] = pse[pse[i]];
+        s.push(i);
         }
-        int ar = 0;
-        for(int i=0;i<n;i++){
-            int h = heights[i];
-            int wid = nse[i] - pse[i] - 1;
-            ar = Math.max(ar, h * wid);
+        while(!s.isEmpty()){
+            int nse= h.length;
+             int element= s.pop();
+            int pse=  s.isEmpty()? -1: s.peek();
+            ans= Math.max(ans,h[element]*(nse-pse-1));
         }
-        return ar;
+
+
+        return ans;
     }
 }
+//traverse in one direc using loop and in other using 
+//stack . when poping u get the pse and i is ur nse
+// can find area and if st has vlaues means nse is n now 
+//can go for pse
